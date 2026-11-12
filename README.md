@@ -5,7 +5,7 @@ Messages arrive one at a time: swipe left to block the traps, right to trust the
 
 - **Daily 10**: the same 10 messages for everyone each day, with a shareable result
 - **Endless run**: three lives and a timer that keeps getting shorter
-- 44 messages based on real scam patterns, each with an explanation of the red flags
+- 45 messages based on real scam patterns, each with an explanation of the red flags
 
 Everything is in a single file, `index.html`, with no build step. Open it in a browser to play.
 
