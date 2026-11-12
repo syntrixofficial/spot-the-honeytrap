@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Spot the Honeytrap</title>
+<meta name="description" content="Real people text you. So do scammers. Swipe to block the traps before the timer runs out.">
+<meta name="theme-color" content="#FFC42E">
+<meta property="og:title" content="Spot the Honeytrap">
+<meta property="og:description" content="10 messages a day. Block the scammers, trust the real ones. Can you spot them all?">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%AF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --honey: #FFC42E;
+    --comb: #F2AE12;
+    --ink: #2B1436;
+    --paper: #FFF9EC;
+    --bubble: #F3EBD9;
+    --sting: #D92D45;
+    --legit: #0A7F5A;
+    --sting-soft: #FF9AA8;
+    --legit-soft: #7CE7C0;
+    --display: "Baloo Bhai 2", ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--body);
+    color: var(--ink);
+    background-color: var(--honey);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath fill='%23F2AE12' fill-opacity='.55' d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/svg%3E");
+    background-size: 56px 98px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  .app {
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 10px 16px 28px;
+    padding-bottom: calc(28px + env(safe-area-inset-bottom));
+  }
+
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+  /* ---------- top bar ---------- */
+  .bar {
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 48px; margin-bottom: 6px;
+  }
+  .brand {
+    font: 800 1.15rem/1 var(--display); color: var(--ink);
+    background: none; border: 0; cursor: pointer; padding: 10px 6px 10px 0;
+  }
+  body[data-screen="home"] .brand { visibility: hidden; }
+  .icon-btn {
+    width: 44px; height: 44px; font-size: 1.15rem; line-height: 1;
+    border: 3px solid var(--ink); border-radius: 14px;
+    background: var(--paper); color: var(--ink); cursor: pointer;
+    box-shadow: 0 3px 0 var(--ink);
+  }
+  .icon-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    display: block; width: 100%;
+    font: 800 1.25rem/1.1 var(--display);
+    padding: 15px 14px 12px;
+    border: 3px solid var(--ink); border-radius: 16px;
+    box-shadow: 0 5px 0 var(--ink);
+    cursor: pointer; color: var(--ink); background: var(--paper);
+    transition: transform .06s ease, box-shadow .06s ease;
+    touch-action: manipulation;
+  }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+  .btn-primary { background: var(--ink); color: var(--honey); box-shadow: 0 5px 0 #000; }
+  .btn-primary:active { box-shadow: 0 1px 0 #000; }
+  .btn-block { background: var(--sting); color: #fff; }
+  .btn-trust { background: var(--legit); color: #fff; }
+  .btn-next { background: var(--honey); border-color: var(--honey); box-shadow: 0 5px 0 #B67C00; }
+  .btn-next:active { box-shadow: 0 1px 0 #B67C00; }
+
+  /* ---------- home ---------- */
+  .title {
+    font: 800 clamp(3.1rem, 17vw, 4.5rem)/.86 var(--display);
+    letter-spacing: -.02em;
+    margin: 0 0 14px;
+  }
+  .lede { font-size: 1.06rem; line-height: 1.45; max-width: 33ch; margin-bottom: 20px; }
+
+  .demo {
+    position: relative; width: 86%; margin: 0 0 26px 4%;
+    background: var(--paper); border: 3px solid var(--ink); border-radius: 18px;
+    box-shadow: 0 6px 0 var(--ink);
+    padding: 12px 14px 14px; transform: rotate(-3deg);
+  }
+  .demo-from { font-size: .82rem; opacity: .8; margin-bottom: 6px; }
+  .demo-text { background: var(--bubble); border-radius: 5px 14px 14px 14px; padding: 9px 12px; font-size: .98rem; line-height: 1.4; }
+  .demo-stamp {
+    position: absolute; right: -14px; top: -16px;
+    font: 800 1.35rem/1 var(--display); text-transform: uppercase; letter-spacing: .04em;
+    color: var(--sting); background: var(--paper);
+    border: 4px solid var(--sting); border-radius: 10px;
+    padding: 7px 11px 3px; transform: rotate(12deg);
+  }
+
+  .home-actions { display: grid; gap: 14px; }
+  .note { font-size: .9rem; line-height: 1.4; margin: 12px 0 0; }
+
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
+  .stat {
+    background: rgba(255, 249, 236, .6); border: 3px solid var(--ink); border-radius: 16px;
+    padding: 10px 14px 8px;
+  }
+  .stat b { display: block; font: 800 1.7rem/1 var(--display); }
+  .stat span { font-size: .82rem; }
+  .fine { font-size: .82rem; line-height: 1.45; margin-top: 20px; opacity: .85; }
+
+  /* ---------- play ---------- */
+  .hud { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: end; margin-bottom: 10px; }
+  .hud > div:nth-child(2) { text-align: center; }
+  .hud > div:nth-child(3) { text-align: right; }
+  .hud-num { display: block; font: 800 1.55rem/1 var(--display); white-space: nowrap; }
+  .hud-lab { font-size: .8rem; }
+  .hud-num.bump { animation: bump .3s ease; }
+  @keyframes bump { 40% { transform: scale(1.25); } }
+
+  .pips { display: flex; gap: 5px; margin-bottom: 10px; }
+  .pip { flex: 1; height: 10px; border: 2px solid var(--ink); border-radius: 4px; background: rgba(255, 249, 236, .45); }
+  .pip.now { background: var(--paper); }
+  .pip.ok { background: var(--legit); }
+  .pip.no { background: var(--sting); }
+
+  .timer {
+    height: 16px; border: 3px solid var(--ink); border-radius: 99px;
+    background: var(--paper); overflow: hidden; margin-bottom: 16px;
+  }
+  .timer-fill { height: 100%; width: 100%; background: var(--ink); transform-origin: left center; }
+  .timer.low .timer-fill { background: var(--sting); }
+
+  .card {
+    position: relative;
+    background: var(--paper); border: 3px solid var(--ink); border-radius: 22px;
+    box-shadow: 0 7px 0 var(--ink);
+    padding: 12px 16px 18px;
+    touch-action: pan-y;
+    -webkit-user-select: none; user-select: none;
+    cursor: grab;
+    transition: transform .22s cubic-bezier(.2, .9, .3, 1.2);
+  }
+  .card.dragging { transition: none; cursor: grabbing; }
+  .card.enter { animation: deal .28s cubic-bezier(.2, .9, .3, 1.2); }
+  @keyframes deal {
+    from { transform: translateY(20px) rotate(-3deg) scale(.96); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+  .card.is-trap, .card.is-safe { cursor: default; }
+  .card.is-trap { border-color: var(--sting); box-shadow: 0 7px 0 var(--sting); }
+  .card.is-safe { border-color: var(--legit); box-shadow: 0 7px 0 var(--legit); }
+
+  .plat { font-size: .88rem; font-weight: 600; min-height: 32px; display: flex; align-items: center; padding-right: 96px; }
+  .sender { display: flex; gap: 12px; align-items: center; margin: 4px 0 12px; }
+  .avatar {
+    flex: none; width: 50px; height: 50px; border-radius: 50%;
+    border: 3px solid var(--ink); background: var(--honey);
+    display: grid; place-items: center; font-size: 1.55rem; line-height: 1;
+  }
+  .name { font: 800 1.22rem/1.15 var(--display); overflow-wrap: anywhere; }
+  .meta { font-size: .86rem; line-height: 1.3; margin-top: 1px; }
+  .bubble {
+    background: var(--bubble); border-radius: 6px 18px 18px 18px;
+    padding: 12px 14px; font-size: 1.06rem; line-height: 1.45; overflow-wrap: anywhere;
+  }
+
+  .stamp {
+    position: absolute; top: 9px;
+    font: 800 1.25rem/1 var(--display); text-transform: uppercase; letter-spacing: .05em;
+    padding: 7px 10px 3px; border: 4px solid currentColor; border-radius: 10px;
+    background: var(--paper); pointer-events: none; opacity: 0;
+  }
+  .stamp-block { right: 12px; color: var(--sting); transform: rotate(9deg); opacity: var(--b, 0); }
+  .stamp-trust { left: 12px; color: var(--legit); transform: rotate(-9deg); opacity: var(--t, 0); }
+  .stamp-verdict { right: 12px; transform: rotate(7deg); }
+  .card.is-trap .stamp-verdict { opacity: 1; color: var(--sting); animation: thunk .24s ease-out; }
+  .card.is-safe .stamp-verdict { opacity: 1; color: var(--legit); animation: thunk .24s ease-out; }
+  @keyframes thunk {
+    from { transform: rotate(7deg) scale(2.2); opacity: 0; }
+    to { transform: rotate(7deg) scale(1); opacity: 1; }
+  }
+
+  .hint { font-size: .86rem; text-align: center; margin-top: 16px; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+
+  .reveal {
+    margin-top: 20px; background: var(--ink); color: var(--paper);
+    border-radius: 18px; padding: 14px 16px 18px;
+    animation: rise .2s ease-out;
+  }
+  @keyframes rise { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .reveal-head {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+    font: 800 1.3rem/1.15 var(--display);
+  }
+  .reveal.good .reveal-head { color: var(--legit-soft); }
+  .reveal.bad .reveal-head { color: var(--sting-soft); }
+  .reveal-pts { white-space: nowrap; }
+  .reveal-why { margin: 6px 0 10px; font-size: 1rem; line-height: 1.45; }
+  .flags { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .flags li { font-size: .82rem; line-height: 1.2; padding: 5px 10px; border-radius: 99px; border: 1.5px solid currentColor; }
+  .flags.red li { color: var(--sting-soft); }
+  .flags.green li { color: var(--legit-soft); }
+
+  /* ---------- end ---------- */
+  .result {
+    background: var(--paper); border: 3px solid var(--ink); border-radius: 22px;
+    box-shadow: 0 7px 0 var(--ink); padding: 18px 18px 20px; text-align: center;
+  }
+  .result-kicker { font: 800 1.1rem/1 var(--display); }
+  .result-big { font: 800 clamp(3.4rem, 19vw, 4.8rem)/.95 var(--display); margin: 8px 0 2px; }
+  .result-rank { font: 800 1.35rem/1.2 var(--display); }
+  .result-line { font-size: .95rem; line-height: 1.4; margin-top: 4px; }
+  .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 14px auto 4px; max-width: 300px; }
+  .cell { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--ink); }
+  .cell.ok { background: var(--legit); }
+  .cell.no { background: var(--sting); }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .result-stats div { background: var(--bubble); border-radius: 12px; padding: 8px 4px 6px; }
+  .result-stats b { display: block; font: 800 1.3rem/1 var(--display); }
+  .result-stats span { font-size: .76rem; }
+
+  .missed { margin-top: 20px; }
+  .missed h2, .tips h2 { font: 800 1.2rem/1.2 var(--display); margin-bottom: 8px; }
+  .missed ul { list-style: none; display: grid; gap: 8px; }
+  .missed li {
+    display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
+    background: rgba(255, 249, 236, .7); border: 2px solid var(--ink); border-radius: 14px; padding: 9px 12px;
+  }
+  .missed .m-av { font-size: 1.4rem; line-height: 1.2; }
+  .missed .m-name { font-weight: 700; font-size: .95rem; }
+  .missed .m-why { font-size: .88rem; line-height: 1.4; }
+  .tag { display: inline-block; font-size: .72rem; font-weight: 700; color: #fff; border-radius: 99px; padding: 2px 8px; margin-left: 6px; vertical-align: 1px; }
+  .tag.trap { background: var(--sting); }
+  .tag.real { background: var(--legit); }
+
+  .tips { margin-top: 20px; background: var(--ink); color: var(--paper); border-radius: 18px; padding: 14px 16px 16px; }
+  .tips p { font-size: .93rem; line-height: 1.5; }
+  .tips p + p { margin-top: 8px; }
+
+  .end-actions { display: grid; gap: 14px; margin-top: 22px; }
+  .manual { margin-top: 14px; }
+  .manual label { display: block; font-size: .88rem; margin-bottom: 6px; }
+  .manual textarea {
+    width: 100%; height: 120px; font: inherit; font-size: .9rem; color: var(--ink);
+    border: 3px solid var(--ink); border-radius: 14px; padding: 10px; background: var(--paper); resize: none;
+  }
+
+  /* ---------- toast + confetti ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom));
+    transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    background: var(--ink); color: var(--paper); font-size: .95rem;
+    padding: 11px 16px; border-radius: 14px; max-width: 90vw; text-align: center;
+    transition: transform .2s ease, opacity .2s ease; z-index: 20;
+  }
+  .toast.show { transform: translate(-50%, 0); opacity: 1; }
+  .confetti { position: fixed; top: -40px; font-size: 1.6rem; pointer-events: none; z-index: 10; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(115vh) rotate(540deg); } }
+
+  @media (min-width: 480px) {
+    .app { padding-top: 28px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body data-screen="home">
+<div class="app">
+
+  <div class="bar">
+    <button class="brand" id="homeBtn" type="button" aria-label="Quit to home screen">🍯 Spot the Honeytrap</button>
+    <button class="icon-btn" id="soundBtn" type="button" aria-label="Sound on" aria-pressed="true">🔊</button>
+  </div>
+
+  <!-- HOME -->
+  <main id="home">
+    <h1 class="title">Spot the Honey&shy;trap</h1>
+    <p class="lede">Real people text you. So do scammers. Swipe left to block the traps, right to trust the real ones, before the timer runs out.</p>
+
+    <div class="demo" aria-hidden="true">
+      <div class="demo-from">💃 Hina, unknown number</div>
+      <div class="demo-text">Turn on your camera, it'll be just us 😘</div>
+      <div class="demo-stamp">Block</div>
+    </div>
+
+    <div class="home-actions">
+      <button class="btn btn-primary" id="dailyBtn" type="button">Play today's 10</button>
+      <button class="btn" id="endlessBtn" type="button">Endless run</button>
+    </div>
+    <p class="note" id="dailyNote"></p>
+
+    <div class="stats">
+      <div class="stat"><b id="statStreak">0</b><span>🔥 day streak</span></div>
+      <div class="stat"><b id="statBest">0</b><span>⭐ best endless run</span></div>
+    </div>
+    <p class="fine">Every message here is a made-up example of a real scam pattern. No real person sent them.</p>
+  </main>
+
+  <!-- PLAY -->
+  <main id="play" hidden>
+    <div class="hud">
+      <div><span class="hud-num" id="score">0</span><span class="hud-lab">points</span></div>
+      <div><span class="hud-num" id="streak">🔥 0</span><span class="hud-lab" id="mult">streak</span></div>
+      <div><span class="hud-num" id="third">1/10</span><span class="hud-lab" id="thirdLab">message</span></div>
+    </div>
+    <div class="pips" id="pips"></div>
+    <div class="timer" id="timer"><div class="timer-fill" id="timerFill"></div></div>
+
+    <article class="card" id="card" aria-live="polite">
+      <div class="plat" id="cPlat"></div>
+      <div class="sender">
+        <div class="avatar" id="cAv" aria-hidden="true"></div>
+        <div>
+          <div class="name" id="cName"></div>
+          <div class="meta" id="cMeta"></div>
+        </div>
+      </div>
+      <p class="bubble" id="cText"></p>
+      <div class="stamp stamp-block" aria-hidden="true">Block</div>
+      <div class="stamp stamp-trust" aria-hidden="true">Trust</div>
+      <div class="stamp stamp-verdict" id="cVerdict" aria-hidden="true"></div>
+    </article>
+
+    <p class="hint" id="hint">Swipe the card, tap a button, or use the ← → keys</p>
+
+    <div class="actions" id="actions">
+      <button class="btn btn-block" id="blockBtn" type="button">🚫 Block</button>
+      <button class="btn btn-trust" id="trustBtn" type="button">✅ Trust</button>
+    </div>
+
+    <div class="reveal" id="reveal" role="status" hidden>
+      <div class="reveal-head"><span id="revealTitle"></span><span class="reveal-pts" id="revealPts"></span></div>
+      <p class="reveal-why" id="revealWhy"></p>
+      <ul class="flags" id="revealFlags"></ul>
+      <button class="btn btn-next" id="nextBtn" type="button">Next message</button>
+    </div>
+  </main>
+
+  <!-- END -->
+  <main id="end" hidden>
+    <div id="endBody"></div>
+    <div class="end-actions">
+      <button class="btn btn-primary" id="shareBtn" type="button">Share my result</button>
+      <button class="btn" id="againBtn" type="button">Play again</button>
+      <button class="btn" id="endHomeBtn" type="button">Home</button>
+    </div>
+    <div class="manual" id="manual" hidden>
+      <label for="manualText">Copy this and paste it to your friends:</label>
+      <textarea id="manualText" readonly></textarea>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+
+/* Optional: paste your game's public link here and it will be added to every shared result. */
+const SHARE_URL = '';
+
+const STORE_KEY = 'spot-the-honeytrap-v1';
+const LAUNCH_UTC = Date.UTC(2026, 10, 12);   // Daily #1
+const DAILY_COUNT = 10;
+const BASE_MS = 12000;                       // time per message
+const MIN_MS = 8000;                         // fastest the endless run gets
+
+/* ------------------------------------------------------------------
+   The deck. trap:true = should be blocked, trap:false = safe to trust.
+   ------------------------------------------------------------------ */
+const CARDS = [
+  // ---------- traps ----------
+  { id: 'ayesha', name: 'Ayesha ✨', av: '👩', plat: '📷 Instagram DM', meta: 'New account, 0 mutual followers',
+    text: 'Hi! I saw your profile and felt a connection 💕 Can we talk on WhatsApp? Send your number.',
+    trap: true, why: 'A stranger who feels an instant connection and rushes you off the app is the classic honeytrap opener.',
+    flags: ['Total stranger', 'Instant feelings', 'Wants you off the app'] },
+  { id: 'sara', name: 'Sara Khan', av: '👩‍💼', plat: '📘 Facebook Messenger', meta: 'Added you 5 days ago',
+    text: "I'm stuck at the airport and my card is blocked 😢 Can you send 15,000 on JazzCash? I'll return it tomorrow, promise!",
+    trap: true, why: 'A sudden emergency plus an urgent money request from someone you barely know. A real person would call family first.',
+    flags: ['Sudden emergency', 'Asks for money', 'You barely know her'] },
+  { id: 'hina', name: 'Hina', av: '💃', plat: '📹 Video call request', meta: 'Unknown number',
+    text: "Let's video call 😘 Turn on your camera, it'll be just us.",
+    trap: true, why: 'Strangers who push for private video calls often record them and use the footage for blackmail (sextortion).',
+    flags: ['Unknown number', 'Pushes for camera', 'Private and rushed'] },
+  { id: 'zara', name: 'Zara Malik', av: '👩', plat: '💘 Dating app', meta: 'Matched 2 days ago',
+    text: 'You seem so smart. I make 5 lakh a month trading crypto and I can teach you! Just deposit on this site first 💸',
+    trap: true, why: "Romance plus an investment tip is the 'pig-butchering' scam. The trading site is fake and deposits never come back.",
+    flags: ['Flattery', 'Guaranteed profit', 'Deposit first'] },
+  { id: 'mehwish', name: 'Mehwish', av: '👩‍🦰', plat: '📷 Instagram DM', meta: 'Chatting for 1 week',
+    text: "Don't tell anyone about us, okay? It's our little secret 🤫 Also, which office do you work in? What do you do there?",
+    trap: true, why: 'Demanding secrecy while digging for work details is how honeytraps collect sensitive information.',
+    flags: ['Demands secrecy', 'Asks about your work'] },
+  { id: 'daraz', name: 'Daraz Support', av: '📦', plat: '💬 SMS', meta: 'From an unknown mobile number',
+    text: 'Congratulations! You won an iPhone in our 11.11 lucky draw. Click bit.ly/claim-now and enter your CNIC and OTP to claim.',
+    trap: true, why: 'No real company asks for your OTP. Prize messages with shortened links are phishing.',
+    flags: ['Prize you never entered', 'Shortened link', 'Asks for CNIC and OTP'] },
+  { id: 'nida', name: 'Nida', av: '👩', plat: '📘 Facebook Messenger', meta: 'Friend request accepted today',
+    text: "Your pics are so cute 😍 Send me some private ones? I'll send mine too.",
+    trap: true, why: 'Asking for private photos is step one of sextortion. Once sent, you can never take them back.',
+    flags: ['Just met', 'Asks for private photos'] },
+  { id: 'jensen', name: 'Jensen Huang ✅ NVIDIA CEO', av: '🧥', plat: '🔴 YouTube Live', meta: 'Channel created 3 days ago, comments turned off',
+    text: "To celebrate the AI boom I'm giving back to the community! Scan the QR code, send any amount of Bitcoin or Ethereum, and get DOUBLE back within minutes. Only during this live stream!",
+    trap: true, why: 'Not the real Jensen Huang. In 2025 scammers ran a deepfake of him on a fake NVIDIA keynote stream that drew around 100,000 viewers. Nobody doubles your crypto.',
+    flags: ['Deepfake of a famous person', 'Send money to get more back', 'Brand-new channel'] },
+  { id: 'oppa', name: 'Oppa_Official_Private 🌟', av: '🕶️', plat: '✈️ Telegram', meta: 'Says he is a famous K-drama actor',
+    text: "My agency doesn't let me talk to fans, so keep this private ❤️ I feel I can trust you. Buy a $200 fan membership card so my manager lets us keep talking.",
+    trap: true, why: "Celebrities do not secretly message fans and ask for money. Fake 'private accounts' of stars are a huge romance scam.",
+    flags: ['Secret celebrity account', 'Keep it private', 'Pay to keep chatting'] },
+  { id: 'drjames', name: 'Dr. James Miller', av: '👨‍⚕️', plat: '📘 Facebook Messenger', meta: 'Says he is a UN doctor posted abroad',
+    text: "My love, I have sent you a parcel with gifts and $40,000 inside. Customs is holding it. Just pay the Rs 35,000 clearance fee and it's all yours.",
+    trap: true, why: 'The gift parcel stuck in customs is an advance-fee scam. There is no parcel, only fee after fee.',
+    flags: ['Never met in person', 'Huge gift', 'Pay a fee to receive it'] },
+  { id: 'anaya', name: 'Anaya 🌸', av: '👩‍🎤', plat: '🟢 WhatsApp', meta: 'Unknown foreign number',
+    text: 'I found a private chat app just for us 🥰 Nobody can read our messages there. Install it from this link: secure-chat-app.apk',
+    trap: true, why: 'An app file sent by a stranger is spyware. It can read your messages, photos and location. Honeytraps use this to spy on people.',
+    flags: ['Unknown foreign number', 'App from outside the store', 'Wants a secret channel'] },
+  { id: 'blackmail', name: 'Unknown', av: '👤', plat: '🟢 WhatsApp', meta: 'Number not in your contacts',
+    text: 'I recorded our video call. Pay 50,000 in 2 hours or I send it to all your Facebook friends and your family.',
+    trap: true, why: 'Paying never ends it, they just ask for more. Stop replying, save screenshots as evidence, block, and tell someone you trust. In Pakistan you can report it on the NCCIA helpline 1799.',
+    flags: ['Threat', 'Deadline pressure', 'Demands money'] },
+  { id: 'wfh', name: 'HR Manager (Online Jobs)', av: '🧑‍💻', plat: '🟢 WhatsApp', meta: 'Unknown number, you never applied',
+    text: 'Earn Rs 5,000 to 15,000 daily just by liking YouTube videos! No experience needed. Pay Rs 2,000 registration fee to activate your account.',
+    trap: true, why: "Real employers pay you, not the other way round. 'Easy task' jobs with a joining fee are scams.",
+    flags: ['You never applied', 'Too easy, too much money', 'Fee to start'] },
+  { id: 'bisp', name: 'BISP 8171 Program', av: '🏛️', plat: '💬 SMS', meta: 'From an ordinary mobile number starting 03',
+    text: 'Mubarak ho! Aap ke 25,000 rupay manzoor ho gaye hain. Raqam lene ke liye is number par call karein aur apna CNIC number batayein.',
+    trap: true, why: 'Genuine BISP messages come only from the short code 8171, never from an ordinary mobile number.',
+    flags: ['Ordinary mobile number', 'Asks for CNIC', 'Money you never applied for'] },
+  { id: 'bankcall', name: 'Bank Helpline', av: '☎️', plat: '📞 Phone call', meta: 'Calling from a mobile number',
+    text: 'Sir, aap ka ATM card block ho gaya hai. Card number aur abhi jo OTP aaya hai woh bata dein, hum foran khol dete hain.',
+    trap: true, why: 'Banks never ask for your OTP, PIN or full card number on a call. Hang up and call the number printed on your card.',
+    flags: ['Calls from a mobile number', 'Asks for OTP', 'Creates panic'] },
+  { id: 'wacode', name: 'Fatima (school friend)', av: '👧', plat: '🟢 WhatsApp', meta: 'Saved contact',
+    text: 'Yaar ghalti se mera 6-digit code tumhare number pe chala gaya 😅 Jaldi bhej do please, urgent hai!',
+    trap: true, why: 'That 6-digit code is the key to YOUR WhatsApp. Her account is probably hacked. Send the code and yours is taken too.',
+    flags: ['Asks for a code sent to you', 'Urgency', "Friend's account may be hacked"] },
+  { id: 'usman', name: 'Usman (friend)', av: '🧔', plat: '📘 Facebook Messenger', meta: 'Friends for 6 years',
+    text: 'Bro urgent, 20k Easypaisa kar do is naye number pe. Mera account masla kar raha hai. Call mat karna, meeting mein hoon.',
+    trap: true, why: "A hacked account sounds just like your friend. The giveaways are the new number and the 'don't call me'. Always call to check.",
+    flags: ['New number', "Don't call me", 'Urgent money'] },
+  { id: 'courier', name: 'Courier Service', av: '🚚', plat: '💬 SMS', meta: 'From an unknown number',
+    text: 'Your parcel is on hold due to an incomplete address. Pay Rs 95 to reschedule delivery: pk-parcel-redelivery.top/track',
+    trap: true, why: "The tiny fee is bait. The page is built to steal your card details. Track parcels only in the courier's own app or website.",
+    flags: ["Parcel you don't expect", 'Strange web address', 'Small fee to hook you'] },
+  { id: 'luckydraw', name: 'Game Show Lucky Draw', av: '🎰', plat: '🟢 WhatsApp', meta: 'Unknown number with a TV logo as its photo',
+    text: 'Aap ka number hamare lucky draw mein 5 lakh jeet gaya hai! Inaam lene ke liye pehle 3,500 rupay tax fee bhejein.',
+    trap: true, why: 'You cannot win a draw you never entered, and real prizes never need a fee first.',
+    flags: ['Never entered', 'Pay to get a prize', 'Unknown number'] },
+  { id: 'signals', name: 'Crypto Signals VIP 📈', av: '🚀', plat: '✈️ Telegram group', meta: 'A stranger added you',
+    text: 'Member Ali just withdrew $2,300 profit today! 🚀 Only 5 VIP slots left. Deposit $100 now to join.',
+    trap: true, why: "Fake groups are full of fake members posting fake profits. The 'few slots left' line is there to rush you.",
+    flags: ['Added by a stranger', 'Fake scarcity', 'Deposit to join'] },
+  { id: 'visa', name: 'Study Abroad Consultant', av: '🎓', plat: '📷 Instagram DM', meta: 'Account has 80 followers',
+    text: '100% visa guarantee for Canada. No IELTS, no interview. Send your passport scan and Rs 50,000 advance to book your seat.',
+    trap: true, why: 'Nobody can guarantee a visa. A stranger asking for your passport and an advance will keep both.',
+    flags: ['100% guarantee', 'Passport scan', 'Advance payment'] },
+  { id: 'support', name: 'Account Support Team', av: '🛡️', plat: '📷 Instagram DM', meta: 'From @support.help.center2291',
+    text: 'Your account will be deleted in 24 hours for copyright violation. Verify your password here to appeal: insta-appeal-form.com',
+    trap: true, why: 'Platforms do not warn you by DM from a random account. The link is a fake login page built to steal your password.',
+    flags: ['Random account', '24-hour threat', 'Asks for password'] },
+  { id: 'emily', name: 'Emily ❤️', av: '👱‍♀️', plat: '🟢 WhatsApp', meta: 'Chatting for 3 weeks, never seen on video',
+    text: "Baby, my camera is still broken 😔 Can you buy me a $100 gift card? I'll pay you back when I visit next month.",
+    trap: true, why: 'Weeks of chatting, always an excuse to avoid video, then a gift card request. Gift cards cannot be traced or refunded.',
+    flags: ['Never on video', 'Gift card request', 'Promises to visit'] },
+  { id: 'rishta', name: 'Mrs. Shabnam (Rishta Service)', av: '👰', plat: '🟢 WhatsApp', meta: 'Unknown number',
+    text: 'Mashallah perfect match mil gaya hai! Doctor larki, family UK mein settled. Photo aur number bhejne se pehle sirf 15,000 registration fee bhej dein.',
+    trap: true, why: 'Too perfect a match, and you pay before seeing anything. Advance-fee scammers love rishta hopes.',
+    flags: ['Too good to be true', 'Fee before any details', 'Unknown number'] },
+  { id: 'buyer', name: 'Buyer (online marketplace)', av: '🧑', plat: '💬 Marketplace chat', meta: 'Account created today',
+    text: "I'll take your phone at full price. I have sent the payment. Just scan this QR code and enter your PIN to receive the money.",
+    trap: true, why: 'You never scan a code or enter a PIN to receive money. Doing that sends money out of your account.',
+    flags: ['Account created today', "Scan to 'receive' money", 'Asks for your PIN'] },
+  { id: 'voice', name: 'Unknown number', av: '📱', plat: '📞 Phone call', meta: 'The voice sounds just like your father',
+    text: 'Beta, mera phone kho gaya hai, yeh naya number hai. Jaldi 30,000 bhej do is account mein, baad mein sab samjhata hoon.',
+    trap: true, why: 'Voices can be cloned with AI from a short clip. Hang up and call the number you already have saved.',
+    flags: ['New number', 'Urgent money', "Won't explain"] },
+
+  // ---------- safe ----------
+  { id: 'ali', name: 'Ali (cousin)', av: '👨', plat: '🟢 WhatsApp', meta: 'Saved contact',
+    text: 'Bhai, ammi ne kaha hai Sunday ko lunch pe aa jao. Confirm kar do.',
+    trap: false, why: 'A family member you know, making normal plans. No money, photos or secrets involved.',
+    flags: ['Saved contact', 'Normal plans', 'Asks for nothing'] },
+  { id: 'uni', name: 'University Admin', av: '🏫', plat: '📧 University email', meta: 'From the official university address',
+    text: 'Reminder: the fee deadline is the 30th. Pay only through the official student portal or by bank challan.',
+    trap: false, why: 'It sends you to official channels and asks for no passwords or personal transfers.',
+    flags: ['Official address', 'Official payment channels', 'No link to click'] },
+  { id: 'ahmed', name: 'Ahmed (classmate)', av: '🧑‍🎓', plat: '🟢 WhatsApp group', meta: 'Your class group',
+    text: "Anyone have the notes from today's lecture? Will share mine for chapter 4.",
+    trap: false, why: 'A normal group message with a fair exchange and no pressure.',
+    flags: ['Class group', 'Fair exchange', 'No pressure'] },
+  { id: 'ammi', name: 'Ammi', av: '👵', plat: '📞 Phone call', meta: 'Saved contact',
+    text: 'Beta, aate hue doodh le aana. Aur khana time pe kha lena.',
+    trap: false, why: 'Your saved contact with a normal request. Pure love. 😄',
+    flags: ['Saved contact', 'Just milk'] },
+  { id: 'systems', name: 'HR, Systems Ltd', av: '💼', plat: '💼 LinkedIn', meta: 'Verified company page, you applied last week',
+    text: 'Thanks for applying. Your interview is scheduled at our office on Monday at 11 am. No fee is required at any stage.',
+    trap: false, why: 'You applied, the company page is verified, the interview is at a real office, and it says no fees.',
+    flags: ['You applied', 'Verified page', 'No fees'] },
+  { id: 'otp', name: 'Your bank', av: '🏦', plat: '💬 SMS', meta: 'Bank short code, seconds after you tapped Log in',
+    text: '482913 is your one-time code. Never share it with anyone. Bank staff will never ask for it.',
+    trap: false, why: 'You asked for this code yourself and it tells you to keep it secret. The danger is only when someone else asks you for it.',
+    flags: ['You requested it', 'Official short code', 'Tells you not to share'] },
+  { id: 'rider', name: 'Delivery rider', av: '🛵', plat: '📞 Call through the food app', meta: 'You ordered biryani 30 minutes ago',
+    text: 'Sir, aap ka order aa gaya hai, gate pe hoon. Cash on delivery 850 rupay.',
+    trap: false, why: 'You placed the order, the call came through the app, and you pay only when the food is in your hands.',
+    flags: ['You ordered it', 'Call through the app', 'Pay on delivery'] },
+  { id: 'bilal', name: 'Bilal (best friend)', av: '😎', plat: '🟢 WhatsApp', meta: 'Saved contact, friends since school',
+    text: 'Bro FIFA tonight? Video call kar, naya squad dikhata hoon 😂',
+    trap: false, why: 'A video call from a friend you know in real life is fine. It is strangers pushing for private calls who are the problem.',
+    flags: ['Known in real life', 'Saved contact', 'Asks for nothing'] },
+  { id: 'reunion', name: 'Sana Tariq', av: '👩‍🏫', plat: '📷 Instagram DM', meta: 'Old classmate, 48 mutual followers',
+    text: 'Yaar! Class 10-B ka reunion ho raha hai 20 December ko. Aana hai? Group mein add kar doon?',
+    trap: false, why: 'Someone you know, with dozens of mutual friends, inviting you to a normal event and asking for nothing.',
+    flags: ['Dozens of mutuals', 'Asks for nothing', 'No rush'] },
+  { id: 'phuppo', name: 'Phuppo', av: '🧕', plat: '🟢 WhatsApp group', meta: 'Family group',
+    text: 'Good morning 🌹🌹🌹 Have a blessed day everyone 🌹',
+    trap: false, why: 'Forwarded many times? Yes. Dangerous? No. 😄 Nobody is asking you for anything.',
+    flags: ['Family group', 'Asks for nothing'] },
+  { id: 'txn', name: 'Your bank', av: '💳', plat: '💬 SMS', meta: 'Bank short code, you just bought groceries',
+    text: 'Rs 1,250 spent at SuperMart on your card ending 4417. Not you? Call the number on the back of your card.',
+    trap: false, why: 'It matches what you just did, has no link, and points you to the number on your own card.',
+    flags: ['Matches your purchase', 'No link', 'Official number only'] },
+  { id: 'sir', name: 'Sir Kamran (Physics)', av: '👨‍🏫', plat: '🟢 WhatsApp group', meta: 'Your class group',
+    text: 'Quiz kal subah 9 baje, chapter 3 aur 4. Calculator laana mat bhoolna.',
+    trap: false, why: 'Bad news, but real news. Your teacher, your class group, and nothing asked of you except studying.',
+    flags: ['Your teacher', 'Class group', 'Asks for nothing'] },
+  { id: 'maham', name: 'Maham', av: '🙋‍♀️', plat: '💘 Dating app', meta: 'Verified profile, chatting for 2 weeks',
+    text: 'Nice talking to you! Coffee this weekend? Somewhere public, maybe the mall food court in the afternoon.',
+    trap: false, why: "No money, no secrecy, no rush to another app, and a public place in daylight. That is what normal looks like. Still, tell a friend where you're going.",
+    flags: ['Public place', 'No money or secrets', 'No rush'] },
+  { id: 'salary', name: 'Accounts Department', av: '🧾', plat: '📧 Work email', meta: "From your company's own address",
+    text: 'October salary slips are now on the HR portal. Log in as usual to view yours.',
+    trap: false, why: 'An internal address, no link, no attachment, and it sends you to the portal you already use.',
+    flags: ['Company address', 'No link', 'Your usual portal'] },
+  { id: 'bundle', name: 'Your mobile network', av: '📶', plat: '💬 SMS', meta: 'Network short code',
+    text: 'Your weekly 10 GB bundle expires tomorrow. Renew from the official app or your usual dial code.',
+    trap: false, why: "A routine reminder from the network's short code, with no link and no personal details requested.",
+    flags: ['Official short code', 'No link', 'Asks for no details'] },
+  { id: 'abbu', name: 'Abbu', av: '👨‍🦳', plat: '🟢 WhatsApp', meta: 'Saved contact',
+    text: 'Beta, bijli ka bill aa gaya hai, table pe rakha hai. Aaj apni banking app se pay kar dena.',
+    trap: false, why: "Your father on his saved number, about a real bill you pay through your own app. Compare that with a 'new number' asking for cash.",
+    flags: ['Saved contact', 'Real bill at home', 'Your own banking app'] },
+  { id: 'shop', name: "Zainab's Closet", av: '🛍️', plat: '📷 Instagram DM', meta: 'Store account since 2021, you ordered yesterday',
+    text: 'Your order is confirmed! Cash on delivery. Please open and check the parcel before you pay the rider.',
+    trap: false, why: 'You placed the order, the store has years of history, and you pay only after checking the parcel.',
+    flags: ['You ordered it', 'Years of history', 'Pay after checking'] },
+  { id: 'login', name: 'Email security alert', av: '🔐', plat: '🔔 System notification', meta: 'Right after you signed in on your laptop',
+    text: "New sign-in to your account on a Windows device. If this was you, you don't need to do anything.",
+    trap: false, why: 'It matches what you just did and asks for nothing. No link, no password, no panic.',
+    flags: ['Matches what you did', 'No link', 'Asks for nothing'] }
+];
+
+/* ---------------------------- helpers ---------------------------- */
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2, '0');
+const fmt = n => Number(n || 0).toLocaleString('en-US');
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function shuffle(a, rnd) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function dayKey(offset) {
+  const n = new Date();
+  const d = new Date(n.getFullYear(), n.getMonth(), n.getDate() + (offset || 0));
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+}
+function dailyNumber() {
+  const n = new Date();
+  const diff = Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - LAUNCH_UTC) / 86400000);
+  return Math.max(1, diff + 1);
+}
+function dailySeed() {
+  const n = new Date();
+  return n.getFullYear() * 10000 + (n.getMonth() + 1) * 100 + n.getDate();
+}
+
+/* ---------------------------- storage ---------------------------- */
+let save = {};
+function loadSave() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    const v = raw ? JSON.parse(raw) : null;
+    save = (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+  } catch (e) { save = {}; }
+}
+function writeSave() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(save)); } catch (e) { /* storage unavailable: keep in memory */ }
+}
+function dayStreak() {
+  const s = save.dayStreak;
+  if (!s || typeof s.count !== 'number') return 0;
+  return (s.last === dayKey(0) || s.last === dayKey(-1)) ? s.count : 0;
+}
+function savedDaily() {
+  const d = save.daily;
+  return (d && d.date === dayKey(0) && Array.isArray(d.results)) ? d : null;
+}
+
+/* ----------------------------- sound ----------------------------- */
+let muted = false;
+let actx = null;
+function tone(freq, dur, type, vol, delay) {
+  if (muted) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    actx = actx || new AC();
+    if (actx.state === 'suspended') actx.resume();
+    const o = actx.createOscillator(), g = actx.createGain();
+    const t = actx.currentTime + (delay || 0);
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(vol || 0.08, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t + dur + 0.02);
+  } catch (e) { /* no audio available */ }
+}
+const sfx = {
+  good() { tone(660, .12, 'triangle', .09); tone(990, .18, 'triangle', .09, .09); },
+  bad() { tone(160, .28, 'sawtooth', .07); },
+  tick() { tone(1100, .05, 'square', .03); },
+  win() { [523, 659, 784, 1047].forEach((f, i) => tone(f, .2, 'triangle', .09, i * .11)); }
+};
+function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) { /* ignore */ } }
+
+function setMuted(m) {
+  muted = !!m;
+  const b = $('soundBtn');
+  b.textContent = muted ? '🔇' : '🔊';
+  b.setAttribute('aria-pressed', String(!muted));
+  b.setAttribute('aria-label', muted ? 'Sound off' : 'Sound on');
+}
+
+/* ----------------------------- toast ----------------------------- */
+let toastTimer = 0;
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ---------------------------- screens ---------------------------- */
+function show(name) {
+  ['home', 'play', 'end'].forEach(s => { $(s).hidden = (s !== name); });
+  document.body.dataset.screen = name;
+  window.scrollTo(0, 0);
+}
+
+function renderHome() {
+  const done = savedDaily();
+  const n = dailyNumber();
+  $('dailyBtn').textContent = done ? "See today's result" : "Play today's 10";
+  $('dailyNote').textContent = done
+    ? 'Daily #' + n + ' is done. A new set of 10 arrives at midnight.'
+    : 'Daily #' + n + ': the same 10 messages for everyone today.';
+  $('statStreak').textContent = fmt(dayStreak());
+  $('statBest').textContent = fmt(save.bestEndless);
+}
+
+function goHome() {
+  stopTimer();
+  G = null;
+  renderHome();
+  show('home');
+}
+
+/* ------------------------------ game ----------------------------- */
+let G = null;        // current game state
+let drag = null;     // current swipe gesture
+let lastSummary = null;
+
+function buildDaily() {
+  const rnd = mulberry32(dailySeed());
+  const traps = shuffle(CARDS.filter(c => c.trap), rnd);
+  const safes = shuffle(CARDS.filter(c => !c.trap), rnd);
+  const nTrap = 5 + Math.floor(rnd() * 3);                 // 5, 6 or 7 traps
+  return shuffle(traps.slice(0, nTrap).concat(safes.slice(0, DAILY_COUNT - nTrap)), rnd);
+}
+
+function multFor(streak) {
+  return streak >= 10 ? 4 : streak >= 6 ? 3 : streak >= 3 ? 2 : 1;
+}
+
+function startGame(mode) {
+  stopTimer();
+  G = {
+    mode: mode,
+    deck: mode === 'daily' ? buildDaily() : shuffle(CARDS.slice(), Math.random),
+    day: dayKey(0), n: dailyNumber(),
+    i: 0, score: 0, streak: 0, best: 0, correct: 0, lives: 3,
+    results: [], phase: 'idle',
+    roundMs: BASE_MS, remaining: BASE_MS, lastTs: 0, lastSec: 0, raf: 0, revealAt: 0
+  };
+  const pips = $('pips');
+  pips.textContent = '';
+  pips.hidden = mode !== 'daily';
+  if (mode === 'daily') G.deck.forEach(() => pips.appendChild(el('span', 'pip')));
+  show('play');
+  showCard();
+}
+
+function updateHud() {
+  $('score').textContent = fmt(G.score);
+  $('streak').textContent = '🔥 ' + G.streak;
+  const m = multFor(G.streak);
+  $('mult').textContent = m > 1 ? 'streak, points x' + m : 'streak';
+  if (G.mode === 'daily') {
+    $('third').textContent = Math.min(G.i + 1, G.deck.length) + '/' + G.deck.length;
+    $('thirdLab').textContent = 'message';
+    const pips = $('pips').children;
+    for (let k = 0; k < pips.length; k++) {
+      const r = G.results[k];
+      pips[k].className = 'pip' + (r ? (r.correct ? ' ok' : ' no') : (k === G.i ? ' now' : ''));
+    }
+  } else {
+    const l = Math.max(0, G.lives);
+    $('third').textContent = '❤️'.repeat(l) + '🖤'.repeat(3 - l);
+    $('thirdLab').textContent = 'message ' + Math.min(G.i + 1, G.deck.length);
+  }
+}
+
+function resetCardPose() {
+  const card = $('card');
+  card.classList.remove('dragging');
+  card.style.transform = '';
+  card.style.setProperty('--b', '0');
+  card.style.setProperty('--t', '0');
+}
+
+function showCard() {
+  const c = G.deck[G.i];
+  const card = $('card');
+  drag = null;
+  card.className = 'card';
+  resetCardPose();
+  $('cPlat').textContent = c.plat;
+  $('cAv').textContent = c.av;
+  $('cName').textContent = c.name;
+  $('cMeta').textContent = c.meta;
+  $('cText').textContent = c.text;
+  $('cVerdict').textContent = '';
+  void card.offsetWidth;                 // restart the entrance animation
+  card.classList.add('enter');
+
+  $('reveal').hidden = true;
+  $('actions').hidden = false;
+  $('hint').hidden = G.i !== 0;
+  G.roundMs = G.mode === 'endless' ? Math.max(MIN_MS, BASE_MS - Math.floor(G.i / 5) * 1000) : BASE_MS;
+  G.phase = 'q';
+  updateHud();
+  window.scrollTo(0, 0);
+  startTimer();
+}
+
+/* timer: driven by animation frames, so it pauses by itself when the tab is hidden */
+function drawTimer() {
+  const frac = Math.max(0, Math.min(1, G.remaining / G.roundMs));
+  $('timerFill').style.transform = 'scaleX(' + frac.toFixed(4) + ')';
+  $('timer').classList.toggle('low', G.remaining <= 3000);
+}
+function startTimer() {
+  stopTimer();
+  G.remaining = G.roundMs;
+  G.lastTs = performance.now();
+  G.lastSec = Math.ceil(G.roundMs / 1000);
+  drawTimer();
+  G.raf = requestAnimationFrame(frame);
+}
+function stopTimer() {
+  if (G && G.raf) { cancelAnimationFrame(G.raf); G.raf = 0; }
+}
+function frame() {
+  if (!G || G.phase !== 'q') return;
+  const now = performance.now();
+  G.remaining -= Math.min(now - G.lastTs, 250);
+  G.lastTs = now;
+  const sec = Math.ceil(G.remaining / 1000);
+  if (sec !== G.lastSec) {
+    G.lastSec = sec;
+    if (sec >= 1 && sec <= 3) sfx.tick();
+  }
+  drawTimer();
+  if (G.remaining <= 0) { answer(null); return; }
+  G.raf = requestAnimationFrame(frame);
+}
+
+/* choice: true = block, false = trust, null = ran out of time */
+function answer(choice) {
+  if (!G || G.phase !== 'q') return;
+  G.phase = 'reveal';
+  stopTimer();
+  drag = null;
+  resetCardPose();
+
+  const c = G.deck[G.i];
+  const timedOut = (choice === null);
+  const correct = !timedOut && choice === c.trap;
+  let pts = 0, mult = 1;
+
+  if (correct) {
+    G.streak++;
+    G.best = Math.max(G.best, G.streak);
+    G.correct++;
+    mult = multFor(G.streak);
+    const timeBonus = Math.round(50 * Math.max(0, G.remaining) / G.roundMs);
+    pts = (100 + timeBonus) * mult;
+    G.score += pts;
+    sfx.good();
+  } else {
+    G.streak = 0;
+    if (G.mode === 'endless') G.lives--;
+    sfx.bad();
+    buzz(120);
+  }
+  G.results.push({ card: c, correct: correct, timedOut: timedOut });
+
+  const card = $('card');
+  card.classList.remove('enter');
+  card.classList.add(c.trap ? 'is-trap' : 'is-safe');
+  $('cVerdict').textContent = c.trap ? 'Trap' : 'Real';
+
+  let title;
+  if (timedOut) title = '⏰ Too slow! ' + (c.trap ? 'That was a trap.' : 'That one was real.');
+  else if (correct) title = c.trap ? '🚫 Blocked. Good catch!' : '✅ Right, that one is real.';
+  else title = c.trap ? '🍯 You got trapped!' : '😅 Oops, that one was real.';
+
+  $('revealTitle').textContent = title;
+  $('revealPts').textContent = correct ? '+' + fmt(pts) + (mult > 1 ? ' (x' + mult + ')' : '') : '';
+  $('revealWhy').textContent = c.why;
+  const flags = $('revealFlags');
+  flags.textContent = '';
+  flags.className = 'flags ' + (c.trap ? 'red' : 'green');
+  c.flags.forEach(f => flags.appendChild(el('li', '', (c.trap ? '🚩 ' : '👍 ') + f)));
+
+  const last = (G.i + 1 >= G.deck.length) || (G.mode === 'endless' && G.lives <= 0);
+  $('nextBtn').textContent = last ? 'See my result' : 'Next message';
+  $('reveal').className = 'reveal ' + (correct ? 'good' : 'bad');
+  $('actions').hidden = true;
+  $('hint').hidden = true;
+  $('reveal').hidden = false;
+  G.revealAt = performance.now();
+  updateHud();
+
+  if (correct) {
+    const s = $('score');
+    s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump');
+  }
+  try {
+    $('nextBtn').focus({ preventScroll: true });
+    $('reveal').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  } catch (e) { /* older browsers */ }
+}
+
+function next() {
+  if (!G || G.phase !== 'reveal') return;
+  if (performance.now() - G.revealAt < 350) return;      // ignore accidental double taps
+  G.i++;
+  if (G.i >= G.deck.length || (G.mode === 'endless' && G.lives <= 0)) finish();
+  else showCard();
+}
+
+function finish() {
+  G.phase = 'done';
+  stopTimer();
+  const summary = {
+    mode: G.mode, n: G.n, date: G.day,
+    correct: G.correct, total: G.results.length,
+    score: G.score, best: G.best,
+    cleared: G.mode === 'endless' && G.lives > 0,
+    results: G.results.map(r => ({ id: r.card.id, ok: r.correct, to: r.timedOut }))
+  };
+  let newBest = false;
+  if (G.mode === 'daily') {
+    if (!(save.daily && save.daily.date === G.day)) {
+      save.daily = summary;
+      const s = save.dayStreak;
+      const prev = (s && typeof s.count === 'number' && s.last === dayKey(-1)) ? s.count : 0;
+      if (!s || s.last !== dayKey(0)) save.dayStreak = { count: prev + 1, last: dayKey(0) };
+    }
+  } else if (G.score > (save.bestEndless || 0)) {
+    save.bestEndless = G.score;
+    newBest = true;
+  }
+  writeSave();
+  renderEnd(summary, newBest);
+  show('end');
+  if ((summary.mode === 'daily' && summary.correct >= 8) || (newBest && summary.correct >= 8)) {
+    sfx.win();
+    confetti();
+  }
+}
+
+/* --------------------------- end screen -------------------------- */
+function rankFor(s) {
+  const tiers = s.mode === 'daily' ? [10, 8, 5] : [30, 18, 8];
+  if (s.correct >= tiers[0]) return ['🕵️ Scam detective', 'Nothing gets past you.'];
+  if (s.correct >= tiers[1]) return ['🛡️ Street smart', 'Sharp eyes. A couple slipped through.'];
+  if (s.correct >= tiers[2]) return ['🙂 Getting there', 'Check the sender before the message.'];
+  return ['🍯 Easy target', 'Scammers would love you. Go again.'];
+}
+
+function cardById(id) {
+  for (let k = 0; k < CARDS.length; k++) if (CARDS[k].id === id) return CARDS[k];
+  return null;
+}
+
+function renderEnd(s, newBest) {
+  lastSummary = s;
+  const body = $('endBody');
+  body.textContent = '';
+  const rank = rankFor(s);
+
+  const box = el('div', 'result');
+  box.appendChild(el('div', 'result-kicker', s.mode === 'daily' ? 'Daily #' + s.n : 'Endless run'));
+  box.appendChild(el('div', 'result-big', s.mode === 'daily' ? s.correct + '/' + s.total : fmt(s.score)));
+  box.appendChild(el('div', 'result-rank', rank[0]));
+  let line = rank[1];
+  if (s.mode === 'endless') {
+    line = s.cleared ? 'You cleared the whole inbox with lives to spare.' : s.correct + ' right out of ' + s.total + '. ' + rank[1];
+    if (newBest) line = 'New personal best! ' + line;
+  }
+  box.appendChild(el('div', 'result-line', line));
+
+  const grid = el('div', 'grid');
+  grid.setAttribute('role', 'img');
+  grid.setAttribute('aria-label', s.correct + ' right, ' + (s.total - s.correct) + ' wrong');
+  s.results.forEach(r => grid.appendChild(el('span', 'cell ' + (r.ok ? 'ok' : 'no'))));
+  box.appendChild(grid);
+
+  const stats = el('div', 'result-stats');
+  const addStat = (v, l) => { const d = el('div'); d.appendChild(el('b', '', v)); d.appendChild(el('span', '', l)); stats.appendChild(d); };
+  if (s.mode === 'daily') addStat(fmt(s.score), 'points'); else addStat(s.correct + '/' + s.total, 'right');
+  addStat('🔥 ' + s.best, 'best streak');
+  if (s.mode === 'daily') addStat(fmt(dayStreak()), 'day streak'); else addStat(fmt(save.bestEndless), 'your best');
+  box.appendChild(stats);
+  body.appendChild(box);
+
+  const missed = s.results.filter(r => !r.ok).map(r => cardById(r.id)).filter(Boolean);
+  if (missed.length) {
+    const sec = el('div', 'missed');
+    sec.appendChild(el('h2', '', 'What got past you'));
+    const ul = el('ul');
+    missed.forEach(c => {
+      const li = el('li');
+      li.appendChild(el('span', 'm-av', c.av));
+      const d = el('div');
+      const nm = el('div', 'm-name', c.name);
+      nm.appendChild(el('span', 'tag ' + (c.trap ? 'trap' : 'real'), c.trap ? 'trap' : 'real'));
+      d.appendChild(nm);
+      d.appendChild(el('div', 'm-why', c.why));
+      li.appendChild(d);
+      ul.appendChild(li);
+    });
+    sec.appendChild(ul);
+    body.appendChild(sec);
+  }
+
+  const tips = el('div', 'tips');
+  tips.appendChild(el('h2', '', 'Keep this with you'));
+  tips.appendChild(el('p', '', "Never send an OTP, money or private photos to someone you have only met online. If a friend suddenly needs cash, call them on the number you already have."));
+  tips.appendChild(el('p', '', 'Being blackmailed or scammed? Stop replying, keep screenshots, and tell someone you trust. In Pakistan, call the NCCIA cybercrime helpline on 1799.'));
+  body.appendChild(tips);
+
+  $('againBtn').textContent = s.mode === 'daily' ? 'Play an endless run' : 'Play again';
+  $('manual').hidden = true;
+}
+
+function shareUrl() {
+  if (SHARE_URL) return SHARE_URL;
+  try {
+    if (window.top === window.self && /^https?:$/.test(location.protocol)) return location.origin + location.pathname;
+  } catch (e) { /* embedded: no reliable link */ }
+  return '';
+}
+
+function shareText(s) {
+  const lines = [];
+  if (s.mode === 'daily') {
+    lines.push('🍯 Spot the Honeytrap, Daily #' + s.n);
+    lines.push(s.correct + '/' + s.total + ' spotted, best streak ' + s.best + ' 🔥');
+    lines.push(s.results.map(r => r.ok ? '🟩' : '🟥').join(''));
+    lines.push('Can you spot them all?');
+  } else {
+    lines.push('🍯 Spot the Honeytrap, endless run');
+    lines.push(fmt(s.score) + ' points, ' + s.correct + ' spotted, best streak ' + s.best + ' 🔥');
+    lines.push('Can you beat that?');
+  }
+  const url = shareUrl();
+  if (url) lines.push(url);
+  return lines.join('\n');
+}
+
+async function copyText(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (e) { /* fall through to the legacy path */ }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    const ok = document.execCommand('copy');
+    ta.remove();
+    return !!ok;
+  } catch (e) { return false; }
+}
+
+async function shareResult() {
+  if (!lastSummary) return;
+  const text = shareText(lastSummary);
+  const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  if (touch && navigator.share) {
+    try { await navigator.share({ text: text }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  if (await copyText(text)) {
+    toast('Result copied. Paste it to your friends.');
+  } else {
+    $('manualText').value = text;
+    $('manual').hidden = false;
+    try { $('manualText').focus(); $('manualText').select(); } catch (e) { /* ignore */ }
+  }
+}
+
+function confetti() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const bits = ['🍯', '🐝', '⭐', '🛡️'];
+  for (let k = 0; k < 26; k++) {
+    const s = el('span', 'confetti', bits[k % bits.length]);
+    s.style.left = (Math.random() * 96) + 'vw';
+    s.style.animationDuration = (1.6 + Math.random() * 1.6) + 's';
+    s.style.animationDelay = (Math.random() * 0.5) + 's';
+    s.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 4200);
+  }
+}
+
+/* ----------------------------- swipe ----------------------------- */
+function bindSwipe() {
+  const card = $('card');
+
+  card.addEventListener('pointerdown', e => {
+    if (!G || G.phase !== 'q') return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, active: false };
+  });
+
+  card.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id || !G || G.phase !== 'q') return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.active) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      if (Math.abs(dy) > Math.abs(dx)) { drag = null; return; }     // vertical: let the page scroll
+      drag.active = true;
+      card.classList.remove('enter');
+      card.classList.add('dragging');
+      try { card.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    }
+    drag.dx = dx;
+    card.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx / 20).toFixed(2) + 'deg)';
+    const k = Math.min(1, Math.abs(dx) / 90).toFixed(2);
+    card.style.setProperty('--b', dx < 0 ? k : '0');
+    card.style.setProperty('--t', dx > 0 ? k : '0');
+  });
+
+  const end = e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag;
+    drag = null;
+    if (!d.active) return;
+    const threshold = Math.min(110, card.offsetWidth * 0.28);
+    if (e.type === 'pointerup' && Math.abs(d.dx) >= threshold) {
+      answer(d.dx < 0);
+    } else {
+      resetCardPose();
+    }
+  };
+  card.addEventListener('pointerup', end);
+  card.addEventListener('pointercancel', end);
+  card.addEventListener('dragstart', e => e.preventDefault());
+}
+
+/* ----------------------------- wiring ---------------------------- */
+function init() {
+  loadSave();
+  setMuted(save.muted === true);
+
+  $('soundBtn').addEventListener('click', () => {
+    setMuted(!muted);
+    save.muted = muted;
+    writeSave();
+    if (!muted) sfx.tick();
+  });
+  $('homeBtn').addEventListener('click', goHome);
+  $('endHomeBtn').addEventListener('click', goHome);
+
+  $('dailyBtn').addEventListener('click', () => {
+    const done = savedDaily();
+    if (done) { renderEnd(done, false); show('end'); }
+    else startGame('daily');
+  });
+  $('endlessBtn').addEventListener('click', () => startGame('endless'));
+  $('againBtn').addEventListener('click', () => startGame('endless'));
+  $('shareBtn').addEventListener('click', shareResult);
+
+  $('blockBtn').addEventListener('click', () => answer(true));
+  $('trustBtn').addEventListener('click', () => answer(false));
+  $('nextBtn').addEventListener('click', next);
+  bindSwipe();
+
+  document.addEventListener('keydown', e => {
+    if (!G || e.repeat || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (G.phase === 'q') {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); answer(true); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); answer(false); }
+    } else if (G.phase === 'reveal') {
+      const onButton = e.target && e.target.tagName === 'BUTTON';   // the button handles its own Enter/Space
+      if ((e.key === 'Enter' || e.key === ' ') && !onButton) { e.preventDefault(); next(); }
+    }
+  });
+
+  renderHome();
+  show('home');
+}
+
+init();
+</script>
+</body>
+</html>
